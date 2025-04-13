@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
+const os = require('os');
 
 const app = express();
 app.use(cors());
@@ -9,12 +10,11 @@ app.use(cors());
 const server = http.createServer(app);
 const io = socketIo(server, {
     cors: {
-        origin: "*", // ⚠️ Achtung: In Produktion einschränken!
+        origin: "*",
         methods: ["GET", "POST"]
     }
 });
 
-let requestHistory = [];
 let requestCount = 0;
 
 app.get('*', (req, res) => {
@@ -26,19 +26,27 @@ app.get('*', (req, res) => {
         headers: req.headers
     };
 
-    requestHistory.push(requestData);
     requestCount++;
     io.emit('newRequest', requestData);
     io.emit('requestCount', requestCount);
+
     res.sendStatus(200);
 });
 
 io.on('connection', (socket) => {
-    socket.emit('initialData', requestHistory);
     socket.emit('requestCount', requestCount);
 });
 
+setInterval(() => {
+    const load = os.loadavg();
+    const mem = process.memoryUsage();
+    const memoryMB = (mem.rss / 1024 / 1024).toFixed(2);
+    const connections = io.engine.clientsCount;
+
+    console.log(`📊 STATUS | Verbindungen: ${connections} | HTTP-Requests: ${requestCount} | CPU: ${load[0].toFixed(2)} | RAM: ${memoryMB} MB`);
+}, 1000);
+
 const PORT = 4000;
 server.listen(PORT, '0.0.0.0', () => {
-    console.log(`✅ Server läuft im Netzwerk: http://10.62.145.47:${PORT}`);
+    console.log(`✅ Server läuft: http://192.168.1.121:${PORT}`);
 });

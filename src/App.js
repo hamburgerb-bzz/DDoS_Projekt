@@ -1,25 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
+import './App.css';
 
-const socket = io('http://localhost:4000');
+const socket = io('http://192.168.1.121:4000');
 
 function App() {
     const [requests, setRequests] = useState([]);
     const [requestCount, setRequestCount] = useState(0);
 
     useEffect(() => {
-        socket.on('initialData', (initialRequests) => {
-            setRequests(initialRequests);
+        // Initiale Daten vom Server empfangen
+        socket.on('initialData', (data) => {
+            setRequests(data.slice(-100)); // Nur die letzten 100 Einträge speichern
         });
 
-        socket.on('newRequest', (newRequest) => {
-            setRequests(prev => [newRequest, ...prev]);
+        // Neue Anfragen empfangen
+        socket.on('newRequest', (request) => {
+            setRequests((prevRequests) => {
+                const updatedRequests = [...prevRequests, request];
+                return updatedRequests.slice(-100); // Nur die letzten 100 Einträge behalten
+            });
         });
 
+        // Gesamtanzahl der Anfragen empfangen
         socket.on('requestCount', (count) => {
             setRequestCount(count);
         });
 
+        // Cleanup der Socket-Events
         return () => {
             socket.off('initialData');
             socket.off('newRequest');
@@ -28,47 +36,16 @@ function App() {
     }, []);
 
     return (
-        <div style={{ padding: '20px', fontFamily: 'Arial' }}>
-            <h1>Live Request Tracker</h1>
-            <h2>Total Requests: {requestCount}</h2>
-            <div style={{
-                backgroundColor: '#f0f0f0',
-                padding: '20px',
-                borderRadius: '10px',
-                marginBottom: '20px'
-            }}>
-                <h2>Latest Requests:</h2>
-                <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                        <thead>
-                        <tr style={{ backgroundColor: '#ddd' }}>
-                            <th style={{ padding: '8px', border: '1px solid #999' }}>Time</th>
-                            <th style={{ padding: '8px', border: '1px solid #999' }}>Method</th>
-                            <th style={{ padding: '8px', border: '1px solid #999' }}>Path</th>
-                            <th style={{ padding: '8px', border: '1px solid #999' }}>IP</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {requests.map((request, index) => (
-                            <tr key={index} style={{ backgroundColor: index % 2 === 0 ? '#fff' : '#f9f9f9' }}>
-                                <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                                    {new Date(request.time).toLocaleString()}
-                                </td>
-                                <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                                    {request.method}
-                                </td>
-                                <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                                    {request.path}
-                                </td>
-                                <td style={{ padding: '8px', border: '1px solid #ddd' }}>
-                                    {request.ip.replace('::ffff:', '')}
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div>
+            <h1>Request Tracker</h1>
+            <p>Total Requests: {requestCount}</p>
+            <ul>
+                {requests.map((req, index) => (
+                    <li key={index}>
+                        {req.time} - {req.method} {req.path} (IP: {req.ip})
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 }
