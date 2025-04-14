@@ -43,10 +43,10 @@ setInterval(() => {
     const memoryMB = (mem.rss / 1024 / 1024).toFixed(2);
     const connections = io.engine.clientsCount;
 
-    console.log(`📊 STATUS | Verbindungen: ${connections} | HTTP-Requests: ${requestCount} | CPU: ${load[0].toFixed(2)} | RAM: ${memoryMB} MB`);
+    console.log(` STATUS | Verbindungen: ${connections} | HTTP-Requests: ${requestCount} | CPU: ${load[0].toFixed(2)} | RAM: ${memoryMB} MB`);
 }, 1000);
 
 const PORT = 4000;
 server.listen(PORT, '0.0.0.0', () => {
-    console.log(`✅ Server läuft: http://10.62.144.11:${PORT}`);
+    console.log(` Server läuft: http://10.62.144.174:${PORT}`);
 });

