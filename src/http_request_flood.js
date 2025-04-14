@@ -1,7 +1,7 @@
 const http = require('http');
 const https = require('https');
 
-const SERVER_URL = 'http://192.168.1.121:4000';
+const SERVER_URL = 'http://10.62.144.11:4000';
 const REQUESTS_PER_SECOND = 1000;
 
 // Performance-Optimierungen

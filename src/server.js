@@ -48,5 +48,5 @@ setInterval(() => {
 
 const PORT = 4000;
 server.listen(PORT, '0.0.0.0', () => {
-    console.log(`✅ Server läuft: http://192.168.1.121:${PORT}`);
+    console.log(`✅ Server läuft: http://10.62.144.11:${PORT}`);
 });

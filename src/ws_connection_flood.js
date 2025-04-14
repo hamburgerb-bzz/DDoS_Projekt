@@ -1,5 +1,5 @@
 const io = require('socket.io-client');
-const SERVER_URL = 'http://192.168.1.121:4000';
+const SERVER_URL = 'http://10.62.144.11:4000';
 
 let activeSockets = [];
 let connectionAttempts = 0;

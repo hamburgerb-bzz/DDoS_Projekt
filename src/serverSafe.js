@@ -12,7 +12,7 @@ const app = express();
 // 1. Grundlegende Sicherheitsmiddlewares
 app.use(helmet());
 app.use(cors({
-    origin: process.env.NODE_ENV === 'production' ? ['https://yourdomain.com'] : '*',
+    origin: process.env.NODE_ENV === 'production' ? ['http://10.62.144.11:3000'] : '*',
     methods: ['GET']
 }));
 
@@ -38,7 +38,7 @@ const server = http.createServer(app);
 // 4. WebSocket-Limits
 const io = socketIo(server, {
     cors: {
-        origin: process.env.NODE_ENV === 'production' ? ['https://yourdomain.com'] : '*',
+        origin: process.env.NODE_ENV === 'production' ? ['http://10.62.144.11:3000'] : '*',
         methods: ["GET"]
     },
     pingTimeout: 10000,
@@ -124,7 +124,7 @@ setInterval(() => {
 // 8. Port-Konfiguration mit Failover
 const PORT = process.env.PORT || 4000;
 server.listen(PORT, '0.0.0.0', () => {
-    console.log(`✅ Geschützter Server läuft: http://localhost:${PORT}`);
+    console.log(`✅ Geschützter Server läuft: http://10.62.144.11:${PORT}`);
 });
 
 // 9. Prozess-Sicherheit
